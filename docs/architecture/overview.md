@@ -2,28 +2,20 @@
 
 ## Purpose
 
-Shydrie is a privacy-preserving distributed platform for fusing biometric telemetry with earth observation and RF spectral streams.
+Shydrie is a distributed, privacy-preserving biometric and environmental data-fusion engine that compartmentalizes sensitive telemetry and recomputes it alongside public Earth observation and RF streams.
 
-## Trust boundaries
+## Core principles
 
-- Bio-private zone: raw biometric telemetry, encrypted storage, isolated compute, de-identification
-- Public data zone: NOAA/NASA Earth observation products, public metadata, RF captures
-- Fusion zone: computed features, policy-checked recomputation, aggregate correlation
-- Observation zone: metrics, logs, dashboards, audit trail
+- strict trust separation between biometric and shared compute domains
+- zero-trust service access and policy enforcement
+- de-identification, pseudonymization, and differential privacy before cross-domain recomputation
+- reproducible DAG-based job orchestration
+- immutable audit logging and lifecycle enforcement
 
-## Runtime domains
+## Design domains
 
-- Biometrics
-- Geospatial fetch and indexing
-- RF telemetry processing
-- Fusion orchestration
-- Governance and observability
-
-## Deployment principles
-
-- zero-trust identity and authorization
-- strict data classification
-- encrypted storage and short-lived credentials
-- TTL retention policies and automated purge
-- versioned ingest and recomputation workflows
-- replayable checkpoints and rollback
+- Biometric privacy domain
+- Environmental and geospatial domain
+- RF spectral telemetry domain
+- Fusion orchestration domain
+- Observability and governance domain
