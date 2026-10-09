@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shydrie-worker
+  namespace: shydrie
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: shydrie-worker
+  template:
+    metadata:
+      labels:
+        app: shydrie-worker
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/your-org/shydrie-worker:latest
+          env:
+            - name: POSTGRES_DSN
+              value: postgresql://postgres:postgres@postgres:5432/shydrie
+            - name: REDIS_URL
+              value: redis://redis:6379/0

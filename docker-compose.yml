@@ -1,0 +1,86 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: shydrie-api
+    ports:
+      - "8000:8000"
+    environment:
+      POSTGRES_DSN: postgresql://postgres:postgres@postgres:5432/shydrie
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: changeme
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    networks:
+      - shydrie
+
+  worker:
+    build:
+      context: ./workers
+      dockerfile: Dockerfile
+    container_name: shydrie-worker
+    environment:
+      POSTGRES_DSN: postgresql://postgres:postgres@postgres:5432/shydrie
+      REDIS_URL: redis://redis:6379/0
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    networks:
+      - shydrie
+
+  postgres:
+    image: timescale/timescaledb:latest-pg15
+    container_name: shydrie-postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: shydrie
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - shydrie
+
+  redis:
+    image: redis:7
+    container_name: shydrie-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - shydrie
+
+  minio:
+    image: minio/minio:latest
+    container_name: shydrie-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - shydrie
+
+volumes:
+  pgdata:
+  minio_data:
+
+networks:
+  shydrie:
+    driver: bridge
